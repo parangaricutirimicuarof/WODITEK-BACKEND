@@ -10,8 +10,8 @@ import cargosRouter from "./SMI_Cargos.js";
 
 const router = Router();
 
-router.use("/", trabajadoresRouter);
-router.use("/regimentrabajadores-construccion", regimenConstruccionRouter);
+router.use("/trabajadores", trabajadoresRouter);
+router.use("/regimen-construccion", regimenConstruccionRouter);
 router.use("/regimen-comun", regimenComunRouter);
 router.use("/regimentrabajador", trabajadorRegimenRouter);
 router.use("/usuarios", usuariosSMIRouter);

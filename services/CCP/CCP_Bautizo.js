@@ -3,41 +3,38 @@ import { getConnection } from "../sqlconfig.js";
 
 const router = Router();
 
-// Crear un registro en la tabla SLP_Formulario
+// Crear un registro en la tabla CCP_Bautizo
 router.post("/create", async (req, res) => {
     const body = req.body || {};
-    const { nombres, email, servicio, telefono, descripcion } = body;
+    const { fecha, hora, nHermanos, nHermanas, salaOracion_Id, anciano_Id } = body;
 
-    if (!nombres || !email || !servicio || !telefono || !descripcion) {
-        return res
-            .status(400)
-            .json({
-                error: "Nombres, email, servicio, teléfono y descripción son requeridos",
-            });
+    if (!fecha || !hora || nHermanos === undefined || nHermanas === undefined || !salaOracion_Id || !anciano_Id) {
+        return res.status(400).json({ error: "Todos los campos son requeridos" });
     }
 
     try {
         const pool = await getConnection();
         const result = await pool
             .request()
-            .input("nombres", nombres)
-            .input("email", email)
-            .input("servicio", servicio)
-            .input("telefono", telefono)
-            .input("descripcion", descripcion)
+            .input("fecha", fecha)
+            .input("hora", hora)
+            .input("nHermanos", nHermanos)
+            .input("nHermanas", nHermanas)
+            .input("salaOracion_Id", salaOracion_Id)
+            .input("anciano_Id", anciano_Id)
             .query(`
-        INSERT INTO [SLP_Formulario] (createdAt, [nombres], [email], [servicio], [telefono], [descripcion])
+        INSERT INTO [CCP_Bautizo] (createdAt, fecha, hora, nHermanos, nHermanas, salaOracion_Id, anciano_Id)
         OUTPUT INSERTED.id
-        VALUES (GETDATE(), @nombres, @email, @servicio, @telefono, @descripcion)
+        VALUES (GETDATE(), @fecha, @hora, @nHermanos, @nHermanas, @salaOracion_Id, @anciano_Id)
       `);
 
         return res.status(201).json({
             id: result.recordset[0].id,
-            message: "Registro creado exitosamente",
+            message: "Bautizo registrado exitosamente",
         });
     } catch (err) {
         console.error(err);
-        return res.status(500).json({ error: "Error interno al crear registro" });
+        return res.status(500).json({ error: "Error interno al registrar bautizo" });
     }
 });
 
@@ -47,9 +44,7 @@ router.get("/getall", async (req, res) => {
         const pool = await getConnection();
         const result = await pool
             .request()
-            .query(
-                "SELECT id, createdAt, [nombres], [email], [servicio], [telefono], [descripcion] FROM [SLP_Formulario] ORDER BY id DESC"
-            );
+            .query("SELECT id, createdAt, fecha, hora, nHermanos, nHermanas, salaOracion_Id, anciano_Id FROM [CCP_Bautizo] ORDER BY id DESC");
         return res.status(200).json(result.recordset);
     } catch (err) {
         console.error(err);
@@ -61,7 +56,7 @@ router.get("/getall", async (req, res) => {
 router.put("/update/:id", async (req, res) => {
     const { id } = req.params;
     const body = req.body || {};
-    const { nombres, email, servicio, telefono, descripcion } = body;
+    const { fecha, hora, nHermanos, nHermanas, salaOracion_Id, anciano_Id } = body;
 
     try {
         const pool = await getConnection();
@@ -70,7 +65,8 @@ router.put("/update/:id", async (req, res) => {
         const exists = await pool
             .request()
             .input("id", id)
-            .query("SELECT id FROM [SLP_Formulario] WHERE id = @id");
+            .query("SELECT id FROM [CCP_Bautizo] WHERE id = @id");
+
         if (exists.recordset.length === 0) {
             return res.status(404).json({ error: "Registro no encontrado" });
         }
@@ -78,25 +74,25 @@ router.put("/update/:id", async (req, res) => {
         await pool
             .request()
             .input("id", id)
-            .input("nombres", nombres)
-            .input("email", email)
-            .input("servicio", servicio)
-            .input("telefono", telefono)
-            .input("descripcion", descripcion)
+            .input("fecha", fecha)
+            .input("hora", hora)
+            .input("nHermanos", nHermanos)
+            .input("nHermanas", nHermanas)
+            .input("salaOracion_Id", salaOracion_Id)
+            .input("anciano_Id", anciano_Id)
             .query(`
-        UPDATE [SLP_Formulario]
+        UPDATE [CCP_Bautizo]
         SET 
-          [nombres] = @nombres,
-          [email] = @email,
-          [servicio] = @servicio,
-          [telefono] = @telefono,
-          [descripcion] = @descripcion
+          fecha = @fecha,
+          hora = @hora,
+          nHermanos = @nHermanos,
+          nHermanas = @nHermanas,
+          salaOracion_Id = @salaOracion_Id,
+          anciano_Id = @anciano_Id
         WHERE id = @id
       `);
 
-        return res
-            .status(200)
-            .json({ message: "Registro actualizado correctamente" });
+        return res.status(200).json({ message: "Registro actualizado correctamente" });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: "Error al actualizar registro" });
@@ -113,7 +109,8 @@ router.delete("/delete/:id", async (req, res) => {
         const exists = await pool
             .request()
             .input("id", id)
-            .query("SELECT id FROM [SLP_Formulario] WHERE id = @id");
+            .query("SELECT id FROM [CCP_Bautizo] WHERE id = @id");
+
         if (exists.recordset.length === 0) {
             return res.status(404).json({ error: "Registro no encontrado" });
         }
@@ -121,10 +118,8 @@ router.delete("/delete/:id", async (req, res) => {
         await pool
             .request()
             .input("id", id)
-            .query("DELETE FROM [SLP_Formulario] WHERE id = @id");
-        return res
-            .status(200)
-            .json({ message: "Registro eliminado exitosamente" });
+            .query("DELETE FROM [CCP_Bautizo] WHERE id = @id");
+        return res.status(200).json({ message: "Registro eliminado exitosamente" });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ error: "Error al eliminar registro" });

@@ -5,7 +5,8 @@ import gimnasioRouter from "./services/gimnasio/gimnasio.js";
 import reservasRouter from "./services/reservas/reservas.js";
 import sqlRouter from "./services/sql_server/sql_server.js";
 import smiRouter from "./services/SMI/smi.js";
-import pruebaRouter from "./services/SMI-LandingPage/landing.js";
+import landingRouter from "./services/SMI-LandingPage/landing.js";
+import ccpRouter from "./services/CCP/ccp.js";
 
 dotenv.config();
 
@@ -31,7 +32,8 @@ app.use("/gimnasio", gimnasioRouter);
 app.use("/reservas", reservasRouter);
 app.use("/sql", sqlRouter);
 app.use("/smi", smiRouter);
-app.use("/prueba", pruebaRouter);
+app.use("/landing", landingRouter);
+app.use("/ccp", ccpRouter);
 // 404 (si ninguna ruta coincidió)
 app.use((req, res) => {
   res.status(404).json({ error: "Ruta no encontrada" });
