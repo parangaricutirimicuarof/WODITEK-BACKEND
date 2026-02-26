@@ -7,13 +7,14 @@ import sqlRouter from "./services/sql_server/sql_server.js";
 import smiRouter from "./services/SMI/smi.js";
 import landingRouter from "./services/SMI-LandingPage/landing.js";
 import ccpRouter from "./services/CCP/ccp.js";
+import pushRouter from "./services/push_notifications/push.js";
+import srmRouter from "./SRM-Registros/srm.js";
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middlewares base
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
@@ -34,6 +35,8 @@ app.use("/sql", sqlRouter);
 app.use("/smi", smiRouter);
 app.use("/landing", landingRouter);
 app.use("/ccp", ccpRouter);
+app.use("/push", pushRouter);
+app.use("/srm", srmRouter);
 // 404 (si ninguna ruta coincidió)
 app.use((req, res) => {
   res.status(404).json({ error: "Ruta no encontrada" });
