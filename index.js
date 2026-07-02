@@ -12,6 +12,7 @@ import srmRouter from "./SRM-Registros/srm.js";
 import tkeRouter from "./services/TKE-OBS/tke.js";
 import barberRouter from "./TheGarrison/barber.js";
 import srhRouter from "./Logistica_SMI/srh.js";
+import yapeRouter, { setupYapeSocket } from "./services/Yape/yapeRouter.js";
 
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -28,6 +29,8 @@ const io = new Server(httpServer, {
   maxHttpBufferSize: 1e7 // 10MB para manejar imágenes base64 pesadas
 });
 
+app.set('socketio', io);
+
 const port = process.env.PORT || 3000;
 
 app.use(cors());
@@ -38,6 +41,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use("/uploads", express.static("./services/TKE-OBS/uploads"));
 app.use("/garrison/uploads", express.static("./TheGarrison/uploads/estilos"));
 app.use("/srh/uploads", express.static("./Logistica_SMI/uploads"));
+app.use("/srm/uploads", express.static("./SRM-Registros/uploads"));
 
 app.use("/gimnasio", gimnasioRouter);
 app.use("/reservas", reservasRouter);
@@ -49,6 +53,7 @@ app.use("/push", pushRouter);
 app.use("/srm", srmRouter);
 app.use("/tke", tkeRouter);
 app.use("/srh", srhRouter);
+app.use("/yape", yapeRouter);
 
 
 // Aislamiento: El sistema de WebSockets (req.io) SOLO se inyectará en las rutas de The Garrison
@@ -60,6 +65,9 @@ app.use("/barber", (req, res, next) => {
 io.on("connection", (socket) => {
   console.log("Nuevo dispositivo conectado (Tablet o TV):", socket.id);
 });
+
+// Inicializa el escuchador de Yape para sockets:
+setupYapeSocket(io);
 
 httpServer.listen(port, () =>
   console.log(`Servidor con WebSockets corriendo en puerto: ${port}`)
