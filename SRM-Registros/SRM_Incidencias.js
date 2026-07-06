@@ -12,7 +12,7 @@ router.post("/create", async (req, res) => {
         estacionIdentificada,
         equipo,
         descripcionIncidencia,
-        foto,
+        fotos,
         motivo,
         accion,
         descripcionAccion,
@@ -33,7 +33,7 @@ router.post("/create", async (req, res) => {
             .input("estacionIdentificada", estacionIdentificada)
             .input("equipo", equipo)
             .input("descripcionIncidencia", descripcionIncidencia)
-            .input("foto", foto || "") // NOT NULL pero puede venir vacío del front
+            .input("foto", JSON.stringify(fotos || [])) // NOT NULL pero puede venir vacío del front
             .input("motivo", motivo)
             .input("accion", accion)
             .input("descripcionAccion", descripcionAccion || null) // Permite NULL según tu script
@@ -89,7 +89,7 @@ router.put("/update/:id", async (req, res) => {
         estacionIdentificada,
         equipo,
         descripcionIncidencia,
-        foto,
+        fotos,
         motivo,
         accion,
         descripcionAccion,
@@ -117,7 +117,7 @@ router.put("/update/:id", async (req, res) => {
             .input("estacionIdentificada", estacionIdentificada)
             .input("equipo", equipo)
             .input("descripcionIncidencia", descripcionIncidencia)
-            .input("foto", foto || "")
+            .input("foto", JSON.stringify(fotos || []))
             .input("motivo", motivo)
             .input("accion", accion)
             .input("descripcionAccion", descripcionAccion || null)

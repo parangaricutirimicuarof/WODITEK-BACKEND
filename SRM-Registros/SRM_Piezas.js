@@ -15,7 +15,7 @@ router.post("/create", async (req, res) => {
         equipoDestino,
         nombrePieza,
         cantidad,
-        foto,
+        fotos,
         motivo,
         observacion,
         responsableTKE,
@@ -39,7 +39,7 @@ router.post("/create", async (req, res) => {
             .input("equipoDestino", equipoDestino)
             .input("nombrePieza", nombrePieza)
             .input("cantidad", cantidad)
-            .input("foto", foto || "") // La foto o la observacion pueden no estar siempre pero la BD dice NOT NULL, asumimos strings vacíos si no llegan
+            .input("foto", fotos ? JSON.stringify(fotos) : "") // La foto o la observacion pueden no estar siempre pero la BD dice NOT NULL, asumimos strings vacíos si no llegan
             .input("motivo", motivo)
             .input("observacion", observacion || "")
             .input("responsableTKE", responsableTKE)
@@ -98,7 +98,7 @@ router.put("/update/:id", async (req, res) => {
         equipoDestino,
         nombrePieza,
         cantidad,
-        foto,
+        fotos,
         motivo,
         observacion,
         responsableTKE,
@@ -129,7 +129,7 @@ router.put("/update/:id", async (req, res) => {
             .input("equipoDestino", equipoDestino)
             .input("nombrePieza", nombrePieza)
             .input("cantidad", cantidad)
-            .input("foto", foto || "")
+            .input("foto", fotos ? JSON.stringify(fotos) : "")
             .input("motivo", motivo)
             .input("observacion", observacion || "")
             .input("responsableTKE", responsableTKE)
