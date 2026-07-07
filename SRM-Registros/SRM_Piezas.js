@@ -19,7 +19,8 @@ router.post("/create", async (req, res) => {
         motivo,
         observacion,
         responsableTKE,
-        responsableSMI
+        responsableSMI,
+        proyectoDestino
     } = body;
 
     // Validación básica de campos requeridos
@@ -44,15 +45,16 @@ router.post("/create", async (req, res) => {
             .input("observacion", observacion || "")
             .input("responsableTKE", responsableTKE)
             .input("responsableSMI", responsableSMI)
+            .input("proyectoDestino", proyectoDestino || null)
             .query(`
         INSERT INTO [SRM_Piezas] (
           createdAt, proyecto, fecha, estacionOrigen, equipoOrigen, estacionDestino, 
-          equipoDestino, nombrePieza, cantidad, foto, motivo, observacion, responsableTKE, responsableSMI
+          equipoDestino, nombrePieza, cantidad, foto, motivo, observacion, responsableTKE, responsableSMI, proyectoDestino
         )
         OUTPUT INSERTED.id
         VALUES (
           GETDATE(), @proyecto, @fecha, @estacionOrigen, @equipoOrigen, @estacionDestino, 
-          @equipoDestino, @nombrePieza, @cantidad, @foto, @motivo, @observacion, @responsableTKE, @responsableSMI
+          @equipoDestino, @nombrePieza, @cantidad, @foto, @motivo, @observacion, @responsableTKE, @responsableSMI, @proyectoDestino
         )
       `);
 
@@ -74,7 +76,7 @@ router.get("/getall", async (req, res) => {
             .request()
             .query(`
         SELECT id, createdAt, proyecto, fecha, estacionOrigen, equipoOrigen, estacionDestino, 
-        equipoDestino, nombrePieza, cantidad, foto, motivo, observacion, responsableTKE, responsableSMI 
+        equipoDestino, nombrePieza, cantidad, foto, motivo, observacion, responsableTKE, responsableSMI, proyectoDestino 
         FROM [SRM_Piezas] 
         ORDER BY id DESC
       `);
@@ -102,7 +104,8 @@ router.put("/update/:id", async (req, res) => {
         motivo,
         observacion,
         responsableTKE,
-        responsableSMI
+        responsableSMI,
+        proyectoDestino
     } = body;
 
     try {
@@ -134,6 +137,7 @@ router.put("/update/:id", async (req, res) => {
             .input("observacion", observacion || "")
             .input("responsableTKE", responsableTKE)
             .input("responsableSMI", responsableSMI)
+            .input("proyectoDestino", proyectoDestino || null)
             .query(`
         UPDATE [SRM_Piezas]
         SET 
@@ -149,7 +153,8 @@ router.put("/update/:id", async (req, res) => {
           motivo = @motivo,
           observacion = @observacion,
           responsableTKE = @responsableTKE,
-          responsableSMI = @responsableSMI
+          responsableSMI = @responsableSMI,
+          proyectoDestino = @proyectoDestino
         WHERE id = @id
       `);
 
